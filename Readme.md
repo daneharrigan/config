@@ -2,6 +2,8 @@
 
 A package in Go for parsing INI files
 
+Documentation is available on [godoc][1].
+
 ### Usage
 
 Your ini file located in your current directory.
@@ -36,3 +38,5 @@ func main() {
 	log.Printf("value=%q", v)
 }
 ```
+
+[1]: https://godoc.org/github.com/daneharrigan/config
