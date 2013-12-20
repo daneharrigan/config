@@ -1,11 +1,12 @@
+// Package config parses and exposes read-only access to INI files
 package config
 
 import (
 	"os"
-	"log"
 	"bufio"
 	"errors"
 	"strings"
+	"io"
 )
 
 var (
@@ -17,6 +18,17 @@ type Config struct {
 	content map[string]map[string]string
 }
 
+// Generates a new config struct containing the contents of the INI file. If the
+// path provided does not point to a file or the file cannot be properly parsed,
+// the `Malformed` error is returned.
+func New(path string) (c *Config, err error) {
+	c = new(Config)
+	c.content, err = parse(path)
+	return c, err
+}
+
+// Returns the value found under the specified section and key. If the value
+// does not exist, the `NotFound` error is returned.
 func (c *Config) Get(s, k string) (string, error) {
 	if _, ok := c.content[s]; ok {
 		if _, ok := c.content[s][k]; ok {
@@ -25,12 +37,6 @@ func (c *Config) Get(s, k string) (string, error) {
 	}
 
 	return "", NotFound
-}
-
-func New(path string) (*Config, error) {
-	c := new(Config)
-	c.content, err := parse(path)
-	return c, err
 }
 
 func parse(path string) (map[string]map[string]string, error) {
@@ -49,12 +55,15 @@ func parse(path string) (map[string]map[string]string, error) {
 	for {
 		b, err := r.ReadByte()
 		if err != nil {
+			if err == io.EOF {
+				return content, nil
+			}
 			return content, err
 		}
 
 		switch b {
 		case '\n': // skip
-		case '#':
+		case ';': // comment
 			_, err = r.ReadString('\n')
 		case '[':
 			// clear
@@ -62,15 +71,15 @@ func parse(path string) (map[string]map[string]string, error) {
 			value = value[:0]
 
 			if section, err = readSection(r); err == nil {
-				section = strings.Trim(section, " ")
+				section = trim(section)
 			}
 		default:
 			if key, err = readKey(r); err == nil {
-				key = strings.Trim(key, " ")
+				key = trim(key)
 			}
 
 			if value, err = readValue(r); err == nil {
-				value = strings.Trim(value, " ")
+				value = trim(value)
 			}
 		}
 
@@ -88,7 +97,7 @@ func parse(path string) (map[string]map[string]string, error) {
 	}
 }
 
-func readdSection(r *bufio.Reader) (string, error) {
+func readSection(r *bufio.Reader) (string, error) {
 	var v []byte
 	for {
 		b, err := r.ReadByte()
@@ -141,7 +150,7 @@ func readValue(r *bufio.Reader) (string, error) {
 		switch b {
 		case '\n':
 			return string(v), err
-		case '#':
+		case ';': // comment
 			_, err = r.ReadBytes('\n')
 			return string(v), err
 		default:
@@ -150,4 +159,9 @@ func readValue(r *bufio.Reader) (string, error) {
 	}
 
 	return "", Malformed
+}
+
+func trim(v string) string {
+	v = strings.Trim(v, " ")
+	return strings.Trim(v, "\t")
 }

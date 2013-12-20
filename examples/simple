@@ -1,6 +1,6 @@
 [section]
-  key = value
-[empty]
-[multi]
+  key = value ; comment
+[empty]       ; comment
+[multi]       ; comment
   foo = multi word value
   bar = another multi word value

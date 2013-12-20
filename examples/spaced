@@ -1,8 +1,7 @@
-[ section ]
+[	section	]
   foo = two spaces
 	bar  =	tabs
 
-[	tab 	]
+[	tab	]
 	baz	= 1
 	cux =	2
-	
