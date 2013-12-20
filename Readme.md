@@ -10,7 +10,7 @@ A package in Go for parsing INI files
   key = value
 ```
 
-```golang
+```go
 package main
 
 import (
