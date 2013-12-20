@@ -1,0 +1,6 @@
+[section]
+  key = value
+[empty]
+[multi]
+  foo = multi word value
+  bar = another multi word value
