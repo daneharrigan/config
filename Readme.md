@@ -4,7 +4,8 @@ A package in Go for parsing INI files
 
 ### Usage
 
-```text
+```ini
+; ~/.config
 [section]
   key = value
 ```
