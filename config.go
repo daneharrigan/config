@@ -74,6 +74,10 @@ func parse(path string) (map[string]map[string]string, error) {
 				section = trim(section)
 			}
 		default:
+			if err = r.UnreadByte(); err != nil {
+				return content, err
+			}
+
 			if key, err = readKey(r); err == nil {
 				key = trim(key)
 			}
