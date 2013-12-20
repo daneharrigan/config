@@ -4,11 +4,15 @@ A package in Go for parsing INI files
 
 ### Usage
 
+Your ini file located in your current directory.
+
 ```ini
-; ~/.config
+; ./.config
 [section]
   key = value
 ```
+
+Your Go file reading in the `.config` file.
 
 ```go
 package main
@@ -19,7 +23,7 @@ import (
 )
 
 func main() {
-	c, err := config.New("~/.config")
+	c, err := config.New("./.config")
 	if err != nil {
 		log.Fatalf("fn=New error=%q", err)
 	}
