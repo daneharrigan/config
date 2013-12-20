@@ -15,7 +15,7 @@ var (
 )
 
 type Config struct {
-	content map[string]map[string]string
+	Content map[string]map[string]string
 }
 
 // Generates a new config struct containing the contents of the INI file. If the
@@ -23,16 +23,16 @@ type Config struct {
 // the `Malformed` error is returned.
 func New(path string) (c *Config, err error) {
 	c = new(Config)
-	c.content, err = parse(path)
+	c.Content, err = parse(path)
 	return c, err
 }
 
 // Returns the value found under the specified section and key. If the value
 // does not exist, the `NotFound` error is returned.
 func (c *Config) Get(s, k string) (string, error) {
-	if _, ok := c.content[s]; ok {
-		if _, ok := c.content[s][k]; ok {
-			return c.content[s][k], nil
+	if _, ok := c.Content[s]; ok {
+		if _, ok := c.Content[s][k]; ok {
+			return c.Content[s][k], nil
 		}
 	}
 
